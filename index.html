@@ -74,29 +74,27 @@
     
     
 
-    <!-- =========================
-         LOADING / INTRO SCREEN
-    ========================== -->
-
+    
     <section id="loading-screen">
+        <canvas id="tide-canvas" aria-hidden="true"></canvas>
 
         <div class="loader-content">
 
-            <!-- THREE ANIMATED DOTS -->
+            
             <div class="loading-icons">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
 
-            <!-- WELCOME TEXT -->
+            
             <h1>
                 
             <span class="Weelcome">Welcome to my</span><br>
 
                  <span  class="portfolio">portfolio website</span></h1>
 
-            <!-- TYPING ANIMATION -->
+           
             <div class="typing-container">
                 <span id="typing-text"></span>
                 <span class="cursor">|</span>
@@ -107,20 +105,15 @@
     </section>
 
 
-    <!-- =========================
-         MOUSE SPOTLIGHT
-    ========================== -->
-
+  
     <div class="mouse-spotlight"></div>
 
 
-    <!-- =========================
-         MAIN PORTFOLIO
-    ========================== -->
+   
 
     <main id="homepage">
 
-        <!-- NAVBAR -->
+      
 
         <nav class="navbar">
             <a href="index.html" class="logo">
@@ -147,19 +140,27 @@
             </button>
             
             <button
-            class="theme-toggle"
-            id="theme-toggle"
-            aria-label="toggle-theme">
-            ☄
-        </button>
+    class="theme-toggle"
+    id="theme-toggle"
+    aria-label="toggle-theme">
+    <img src="buwanshit.png" alt="" class="theme-icon" id="theme-icon">
+</button>
     </div>
 </nav>
+       <button class="notes-toggle" id="notes-toggle" type="button" aria-label="Notes">
+  <i class="fa-solid fa-note-sticky"></i><span>Notes</span>
+  <b class="notes-count" id="notes-count">0</b>
+</button>
 
-       
-
-        <!-- =========================
-             HERO SECTION
-        ========================== -->
+<aside class="notes-panel" id="notes-panel" aria-hidden="true">
+  <header><h4>Leave a note</h4><button type="button" id="notes-close" aria-label="Close">&times;</button></header>
+  <form id="notes-form">
+    <input id="notes-name" maxlength="30" placeholder="Name (optional)">
+    <textarea id="notes-text" maxlength="280" placeholder="Write a note..." required></textarea>
+    <div class="notes-row"><small><span id="notes-left">280</span> left</small><button type="submit">Post</button></div>
+  </form>
+  <ul id="notes-list"></ul>
+</aside>
 
         <section id="home" class="hero">
 
@@ -186,7 +187,8 @@
 </h3>
 
     <p class="description hero-animate hero-description">
-    UNDER MAINTENANCE
+        <h5>WHY HIRE ME?</h5>
+    I may be at the beginning of my professional journey, but I'm committed to learning, solving problems, and building meaningful digital experiences.
 </p>
 
         <div class="social-links hero-animate hero-socials">
@@ -203,8 +205,8 @@
         <i class="fa-brands fa-github"></i>
     </a>
 
-    <a href="#" class="social-icon" target="_blank" aria-label="Discord">
-        <i class="fa-brands fa-discord"></i>
+    <a href="https://www.instagram.com/ninhiahhej1/" class="social-icon" target="_blank" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i>
     </a>
 
         </div>
@@ -224,11 +226,11 @@
 
 </div>
 
-    <!-- HANGING ID -->
-
+<div id="lanyard" aria-label="Draggable ID card"></div>
     <div class="hanging-id" id="hanging-id">
+        
 
-        <svg class="id-lace" viewBox="0 0 220 420">
+        <svg class="id-lace" viewBox="0 0 420 620">
 
     <path id="lace-left"></path>
     <path id="lace-right"></path>
@@ -238,7 +240,7 @@
         id="lace-text-path"
         href="#lace-left"
         startOffset="0%">
-        JhaiDev.     JhaiDev.     JhaiDev.     JhaiDev.    JhaiDev.   JhaiDev.     JhaiDev.     JhaiDev.     JhaiDev.    JhaiDev.
+            JhaiDev.    
     </textPath>
 </text>
 
@@ -286,7 +288,7 @@
         </div>
 
 
-        <!-- BACK -->
+        
         <div class="id-face id-back">
 
             <div class="back-content">
@@ -334,9 +336,7 @@
 
 </section>
 
-<!-- =========================
-     ABOUT
-========================== -->
+
 
 <section id="about" class="section about-section">
 
@@ -378,7 +378,7 @@
     
 
 
-    <!-- PROFILE CARD -->
+   
 
     <div class="profile-card-wrapper">
 
@@ -447,61 +447,162 @@
 </div>
 
 
-        <!-- =========================
-             SKILLS
-        ========================== -->
 
-        <section id="skills" class="section">
+       
+<section id="skills" class="skills-section">
+    <h2>MY SKILLS</h2>
 
-            <h2>
-                SKILLS
-            </h2>
+    <div class="skill-cards">
 
-            <div class="cards">
+        <!-- FRONT-END -->
+        <div class="skill-card">
+            <h3>Frontend</h3>
+            <div class="skill-grid">
 
-                <div class="card">
-                    <h3>Frontend</h3>
-
-                    <p>
-                        under maintenance
-                    </p>
+                <div class="skill-item">
+                    <img src="5847f5bdcef1014c0b5e489c.png" alt="HTML">
+                    <span>HTML</span>
                 </div>
 
-
-                <div class="card">
-                    <h3>Backend & Database</h3>
-
-                    <p>
-                        under maintenance
-                    </p>
+                <div class="skill-item">
+                    <img src="css-3.png" alt="CSS">
+                    <span>CSS</span>
                 </div>
 
-
-                <div class="card">
-                    <h3>Tools</h3>
-
-                    <p>
-                        under maintenance
-                    </p>
+                <div class="skill-item">
+                    <img src="js.png" alt="JavaScript">
+                    <span>JavaScript</span>
                 </div>
 
+                <div class="skill-item">
+                    <img src="bootstrap.png" alt="Bootstrap">
+                    <span>Bootstrap</span>
+                </div>
 
-                <div class="card">
-                    <h3>Others</h3>
-
-                    <p>
-                        under maintenance
-                    </p>
+                <div class="skill-item">
+                    <img src="typescript.png" alt="TypeScript">
+                    <span>TypeScript</span>
                 </div>
 
             </div>
+        </div>
 
-        </section>
+        <!-- BACK-END -->
+        <div class="skill-card">
+            <h3>Backend</h3>
+            <div class="skill-grid">
+
+                <div class="skill-item">
+                    <img src="django.png" alt="Django">
+                    <span>Django</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="nodejs.png" alt="Node.js">
+                    <span>Node.js</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="programing.png" alt="PHP">
+                    <span>PHP</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="python.png" alt="Python">
+                    <span>Python</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="java-logo.png" alt="Java">
+                    <span>Java</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- DATABASE -->
+        <div class="skill-card">
+            <h3>Database</h3>
+            <div class="skill-grid">
+
+                <div class="skill-item">
+                    <img src="database.png" alt="PostgreSQL">
+                    <span>PostgreSQL</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="database-storage.png" alt="MySQL">
+                    <span>MySQL</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="mongodb-seeklogo.png" alt="MongoDB">
+                    <span>MongoDB</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="database (1).png" alt="SQLite">
+                    <span>SQLite</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TOOLS -->
+        <div class="skill-card">
+            <h3>Tools &amp; Workflow</h3>
+            <div class="skill-grid">
+
+                <div class="skill-item">
+                    <img src="629b71eb7c5cd817694c3227.png" alt="Visual Studio">
+                    <span>Visual Studio</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="Figma.png" alt="Figma">
+                    <span>Figma</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="5847f981cef1014c0b5e48be.png" alt="Git">
+                    <span>Git</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="cursor-seeklogo.png" alt="Cursor">
+                    <span>Cursor</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="claude-ai-icon.png" alt="Claude">
+                    <span>Claude</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="framer-icon-seeklogo.png" alt="Framer">
+                    <span>Framer</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- OTHERS -->
+        <div class="skill-card other-card">
+            <h3>Others</h3>
+            <div class="skill-grid other-skills">
+                <div class="other-skill-placeholder"></div>
+                <div class="other-skill-placeholder"></div>
+                <div class="other-skill-placeholder"></div>
+                <div class="other-skill-placeholder"></div>
+            </div>
+        </div>
+
+    </div>
+</section>
 
 
-        <!-- =========================
-             PROJECTS
-        ========================== -->
+
+    
 
         <section id="projects" class="section">
 
@@ -554,28 +655,23 @@
         </section>
 
 
-        <!-- =========================
-             CONTACT
-        ========================== -->
 
         <section id="contact" class="section contact">
 
             <h2>
-                Contact Me
+                USAP TAYO RIGHT MEOW
             </h2>
 
             <p>
-                CONTACT DES
+                If you have any questions, inquiries, or would like to collaborate on a project, feel free to reach out to me. I'm always open to new opportunities and connections. Let's connect and discuss how we can work together!
             </p>
 
             <a href="manabatjhai03@gmail.com" class="btn">
-                Send Me an Email
+                Send me an email
             </a>
 
         </section>
 
-
-        <!-- FOOTER -->
 
         <footer>
 
@@ -585,12 +681,40 @@
 
         </footer>
 
+        <button class="jhai-toggle" id="jhai-toggle" type="button" aria-label="Chat with JhAi">
+  <span class="jhai-ring"></span><span class="jhai-ring r2"></span>
+  <i class="fa-solid fa-wand-magic-sparkles jhai-ico-open"></i>
+  <i class="fa-solid fa-xmark jhai-ico-close"></i>
+  <span class="jhai-dot"></span>
+</button>
+<div class="jhai-hint" id="jhai-hint">Hello, ako si JhAi! may kailangan kaba?</div>
+
+<section class="jhai-panel" id="jhai-panel" aria-hidden="true">
+  <header class="jhai-head">
+    <div class="jhai-avatar"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+    <div><strong>JhAi</strong><small>Jhai's assistant · online</small></div>
+  </header>
+  <div class="jhai-messages" id="jhai-messages"></div>
+  <div class="jhai-chips" id="jhai-chips">
+    <button type="button">Sino si Jhai?</button>
+    <button type="button">Ano skills niya?</button>
+    <button type="button">Paano siya kontakin?</button>
+    <button type="button">Miss mo na?</button>
+  </div>
+  <form class="jhai-form" id="jhai-form">
+    <input id="jhai-input" maxlength="300" placeholder="Reply" autocomplete="off">
+    <button type="submit" id="jhai-send" aria-label="Send"><i class="fa-solid fa-paper-plane"></i></button>
+  </form>
+  <p class="jhai-note">si JhAi ay under maintenance pa, pwede wait?</p>
+</section>
+
     </main>
 
 
-    <!-- JAVASCRIPT -->
-
+   
+    <script src="ascii-tide.js"></script>
     <script src="script.js"></script>
+    <script type="module" src="lanyard.js"></script>
 
 </body>
 </html>
