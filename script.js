@@ -1039,7 +1039,7 @@ const fallback = (q) => {
             ok = r.ok;
         } catch (e) { ok = true; }
         if (!ok) {
-            body.innerHTML = '<p class="cv-msg">Hindi mahanap ang <b>' + CV_URL +
+            body.innerHTML = '<p class="cv-msg">Coming Soon!! <b>' + CV_URL +
                 '</b>. Siguraduhing nasa same folder ito ng index.html.</p>';
             return;
         }
@@ -1263,7 +1263,7 @@ const fallback = (q) => {
         } else if (img) {
             body.innerHTML = '<img class="cv-page" src="' + img + '" alt="Certificate">';
         } else {
-            body.innerHTML = '<p class="cv-msg">Hindi mahanap ang <b>' + url + '</b>.</p>';
+            body.innerHTML = '<p class="cv-msg">Coming Soon!! <b>' + url + '</b>.</p>';
         }
     }
 
