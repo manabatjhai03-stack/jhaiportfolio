@@ -1,7 +1,6 @@
 const loadingScreen = document.getElementById("loading-screen");
 const homepage = document.getElementById("homepage");
 const typingText = document.getElementById("typing-text");
-const spotlight = document.querySelector(".mouse-spotlight");
 const themeToggle = document.getElementById("theme-toggle");
 const hangingID = document.getElementById("hanging-id");
 const idCard = document.getElementById("id-card");
@@ -66,32 +65,7 @@ window.addEventListener("load", () => {
     }, 1000);
 }, 5000);
 });
-// =====================================================
-// MOUSE SPOTLIGHT
-// =====================================================
-let mouseX = window.innerWidth / 2;
-let mouseY = window.innerHeight / 2;
-let currentX = mouseX;
-let currentY = mouseY;
-document.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    if (spotlight) {
-        spotlight.style.opacity = "1";
-    }
-});
-function animateSpotlight() {
-    currentX += (mouseX - currentX) * 0.12;
-    currentY += (mouseY - currentY) * 0.12;
-    if (spotlight) {
-        spotlight.style.left =
-            `${currentX}px`;
-        spotlight.style.top =
-            `${currentY}px`;
-    }
-    requestAnimationFrame(animateSpotlight);
-}
-animateSpotlight();
+
 // =====================================================
 // THEME
 // =====================================================
@@ -831,38 +805,6 @@ revealElements.forEach((element) => {
 })();
 
 
-/* ---------- NOTES ---------- */
-(function () {
-  const KEY = "jhaidev-notes";
-  const $ = (id) => document.getElementById(id);
-  const toggle = $("notes-toggle"), panel = $("notes-panel"), list = $("notes-list"),
-        count = $("notes-count"), text = $("notes-text"), left = $("notes-left");
-  if (!toggle || !panel) return;
-  let notes = [];
-  try { notes = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) {}
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(notes)); } catch (e) {} };
-  function render() {
-    list.innerHTML = "";
-    notes.slice().reverse().forEach((n) => {
-      const li = document.createElement("li");
-      const b = document.createElement("b"); b.textContent = n.name || "Anonymous";
-      const p = document.createElement("p"); p.textContent = n.text;
-      li.append(b, p); list.appendChild(li);
-    });
-    count.textContent = notes.length;
-  }
-  const setOpen = (o) => { panel.classList.toggle("open", o); panel.setAttribute("aria-hidden", !o); };
-  toggle.addEventListener("click", () => setOpen(!panel.classList.contains("open")));
-  $("notes-close").addEventListener("click", () => setOpen(false));
-  text.addEventListener("input", () => (left.textContent = 280 - text.value.length));
-  $("notes-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const t = text.value.trim(); if (!t) return;
-    notes.push({ name: $("notes-name").value.trim().slice(0, 30), text: t.slice(0, 280) });
-    save(); render(); text.value = ""; left.textContent = 280;
-  });
-  render();
-})();
 
 /* ---------- JhAi ---------- */
 (function () {
@@ -982,4 +924,391 @@ const fallback = (q) => {
   chips.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => handleSend(b.textContent)));
   setTimeout(() => { if (!panel.classList.contains("open")) hint.classList.add("show"); }, 9000);
   setTimeout(() => hint.classList.remove("show"), 18000);
+})();
+
+
+/* CV PREVIEW POPUP */
+(() => {
+    const modal = document.getElementById("cvModal");
+    const openBtn = document.getElementById("openCvBtn");
+    const closeBtn = document.getElementById("closeCvBtn");
+    const closeFooter = document.getElementById("closeCvFooter");
+    const backdrop = document.getElementById("cvBackdrop");
+
+    if (!modal || !openBtn || !closeBtn ||
+        !closeFooter || !backdrop) {
+        return;
+    }
+
+    function openCvModal() {
+        modal.classList.add("active");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("cv-modal-open");
+        closeBtn.focus();
+    }
+
+    function closeCvModal() {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("cv-modal-open");
+        openBtn.focus();
+    }
+
+    openBtn.addEventListener("click", openCvModal);
+    closeBtn.addEventListener("click", closeCvModal);
+    closeFooter.addEventListener("click", closeCvModal);
+    backdrop.addEventListener("click", closeCvModal);
+
+    document.addEventListener("keydown", (event) => {
+        if (
+            event.key === "Escape" &&
+            modal.classList.contains("active")
+        ) {
+            closeCvModal();
+        }
+    });
+})();
+
+/* =====================================================
+   CV PREVIEW POP-UP
+   - click "View My CV"  -> bubukas agad ang preview
+   - hover/hold 1.5s (yung loading ring) -> bubukas din
+   - may Download button sa loob ng pop-up
+===================================================== */
+(function () {
+    if (window.__cvPreviewLoaded) return;   // kapag nakadikit nang higit isang beses, isa lang ang tatakbo
+    window.__cvPreviewLoaded = true;
+
+    const CV_URL = "Jhai vincent s. manabat.pdf";                 // <-- pangalan ng PDF mo (nasa same folder ng index.html)
+    const CV_NAME = "Jhai-Manabat-CV.pdf";   // pangalan ng file kapag dinownload
+    const PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    const PDFJS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    const btn = document.getElementById("cv-btn");
+    if (!btn) return;
+
+    let modal = null;
+    let body = null;
+    let lastFocus = null;
+    let loaded = false;
+
+    function build() {
+        modal = document.createElement("div");
+        modal.className = "cv-modal";
+        modal.setAttribute("role", "dialog");
+        modal.setAttribute("aria-modal", "true");
+        modal.setAttribute("aria-label", "CV preview");
+        modal.innerHTML =
+            '<div class="cv-panel">' +
+                '<div class="cv-head">' +
+                    '<span class="cv-title">My CV</span>' +
+                    '<div class="cv-actions">' +
+                        '<a class="cv-action cv-download" href="' + CV_URL + '" download="' + CV_NAME + '">' +
+                            '<i class="fa-solid fa-download"></i> Download</a>' +
+                        '<a class="cv-action cv-newtab" href="' + CV_URL + '" target="_blank" rel="noopener">' +
+                            '<i class="fa-solid fa-up-right-from-square"></i> Open</a>' +
+                        '<button type="button" class="cv-close" aria-label="Close preview">&times;</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="cv-body"><p class="cv-msg">Loading CV...</p></div>' +
+            '</div>';
+        document.body.appendChild(modal);
+        body = modal.querySelector(".cv-body");
+
+        modal.addEventListener("pointerdown", (e) => {
+            if (e.target === modal) close();
+        });
+        modal.querySelector(".cv-close").addEventListener("click", close);
+    }
+
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            const s = document.createElement("script");
+            s.src = src;
+            s.onload = resolve;
+            s.onerror = reject;
+            document.head.appendChild(s);
+        });
+    }
+
+    // fallback: browser's own PDF viewer
+    async function showFrame() {
+        let ok = true;
+        try {
+            const r = await fetch(CV_URL, { method: "HEAD" });
+            ok = r.ok;
+        } catch (e) { ok = true; }
+        if (!ok) {
+            body.innerHTML = '<p class="cv-msg">Hindi mahanap ang <b>' + CV_URL +
+                '</b>. Siguraduhing nasa same folder ito ng index.html.</p>';
+            return;
+        }
+        body.innerHTML = '<iframe class="cv-frame" src="' + CV_URL + '#view=FitH" title="CV"></iframe>';
+    }
+
+    // pdf.js: gumagana kahit sa phone (hindi lang first page)
+    async function renderPdf() {
+        if (!window.pdfjsLib) await loadScript(PDFJS);
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+        const pdf = await window.pdfjsLib.getDocument(CV_URL).promise;
+        body.innerHTML = "";
+        const width = Math.min(body.clientWidth - 24, 900);
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        for (let n = 1; n <= pdf.numPages; n++) {
+            const page = await pdf.getPage(n);
+            const base = page.getViewport({ scale: 1 });
+            const scale = width / base.width;
+            const vp = page.getViewport({ scale: scale * ratio });
+            const canvas = document.createElement("canvas");
+            canvas.className = "cv-page";
+            canvas.width = vp.width;
+            canvas.height = vp.height;
+            canvas.style.width = width + "px";
+            canvas.style.height = (vp.height / ratio) + "px";
+            body.appendChild(canvas);
+            await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+        }
+    }
+
+    async function load() {
+        if (loaded) return;
+        loaded = true;
+        try {
+            await renderPdf();
+        } catch (err) {
+            await showFrame();
+        }
+    }
+
+    function onKey(e) {
+        if (e.key === "Escape") close();
+        if (e.key === "Tab" && modal) {
+            const f = modal.querySelectorAll("a[href], button");
+            if (!f.length) return;
+            const first = f[0], last = f[f.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+    }
+
+    function open() {
+        if (!modal) build();
+        if (modal.classList.contains("open")) return;
+        lastFocus = document.activeElement;
+        modal.classList.add("open");
+        document.documentElement.classList.add("cv-lock");
+        document.addEventListener("keydown", onKey);
+        modal.querySelector(".cv-close").focus();
+        load();
+    }
+
+    function close() {
+        if (!modal) return;
+        modal.classList.remove("open");
+        document.documentElement.classList.remove("cv-lock");
+        document.removeEventListener("keydown", onKey);
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    // click / tap
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        open();
+    });
+
+    // hover-hold ring (galing sa script.js) -> pagka-tapos ng ring, may class na "hold-done"
+    new MutationObserver(() => {
+        if (btn.classList.contains("hold-done")) open();
+    }).observe(btn, { attributes: true, attributeFilter: ["class"] });
+
+    window.openCvPreview = open;
+})();
+
+
+/* =====================================================
+   CERTIFICATES
+   1) fade-in + blur pag nag-scroll
+   2) glowing border (BorderGlow) paglapit ng mouse
+   3) click = preview pop-up (may Download PDF sa loob)
+===================================================== */
+(function () {
+    if (window.__certsLoaded) return;
+    window.__certsLoaded = true;
+
+    const cards = document.querySelectorAll("#certificates .cert-card");
+    if (!cards.length) return;
+
+    /* ---------- 1) FADE IN + BLUR ---------- */
+    cards.forEach((card) => card.classList.add("cert-pre"));
+    const heading = document.querySelector("#certificates h2");
+    if (heading) heading.classList.add("cert-pre");
+
+    const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach((en) => {
+            if (!en.isIntersecting) return;
+            const el = en.target;
+            const i = Array.prototype.indexOf.call(cards, el);
+            el.style.animationDelay = (i < 0 ? 0 : (i % 3) * 0.15) + "s";
+            el.classList.remove("cert-pre");
+            el.classList.add("cert-in");
+            obs.unobserve(el);
+        });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    cards.forEach((c) => io.observe(c));
+    if (heading) io.observe(heading);
+
+    /* ---------- 2) GLOW ---------- */
+    function edgeProximity(el, x, y) {
+        const r = el.getBoundingClientRect();
+        const cx = r.width / 2, cy = r.height / 2;
+        const dx = x - cx, dy = y - cy;
+        let kx = Infinity, ky = Infinity;
+        if (dx !== 0) kx = cx / Math.abs(dx);
+        if (dy !== 0) ky = cy / Math.abs(dy);
+        return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+    }
+    function cursorAngle(el, x, y) {
+        const r = el.getBoundingClientRect();
+        const dx = x - r.width / 2, dy = y - r.height / 2;
+        if (dx === 0 && dy === 0) return 0;
+        let deg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+        if (deg < 0) deg += 360;
+        return deg;
+    }
+    cards.forEach((card) => {
+        if (!card.classList.contains("bg-glow")) {
+            card.classList.add("bg-glow");
+            const edge = document.createElement("span");
+            edge.className = "edge-light";
+            card.appendChild(edge);
+        }
+        card.addEventListener("pointermove", (e) => {
+            const r = card.getBoundingClientRect();
+            const x = e.clientX - r.left, y = e.clientY - r.top;
+            card.style.setProperty("--edge-proximity", (edgeProximity(card, x, y) * 100).toFixed(3));
+            card.style.setProperty("--cursor-angle", cursorAngle(card, x, y).toFixed(3) + "deg");
+        });
+    });
+
+    /* ---------- 3) PREVIEW POP-UP ---------- */
+    const PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    const PDFJS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    let modal = null, body = null, titleEl = null, dlEl = null, newEl = null;
+    let lastFocus = null, token = 0;
+
+    function build() {
+        modal = document.createElement("div");
+        modal.className = "cv-modal cert-modal";
+        modal.setAttribute("role", "dialog");
+        modal.setAttribute("aria-modal", "true");
+        modal.innerHTML =
+            '<div class="cv-panel">' +
+                '<div class="cv-head">' +
+                    '<span class="cv-title"></span>' +
+                    '<div class="cv-actions">' +
+                        '<a class="cv-action cv-download" href="#" download><i class="fa-solid fa-download"></i> Download</a>' +
+                        '<a class="cv-action cv-newtab" href="#" target="_blank" rel="noopener"><i class="fa-solid fa-up-right-from-square"></i> Open</a>' +
+                        '<button type="button" class="cv-close" aria-label="Close preview">&times;</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="cv-body"></div>' +
+            '</div>';
+        document.body.appendChild(modal);
+        body = modal.querySelector(".cv-body");
+        titleEl = modal.querySelector(".cv-title");
+        dlEl = modal.querySelector(".cv-download");
+        newEl = modal.querySelector(".cv-newtab");
+        modal.addEventListener("pointerdown", (e) => { if (e.target === modal) close(); });
+        modal.querySelector(".cv-close").addEventListener("click", close);
+    }
+
+    function loadScript(src) {
+        return new Promise((res, rej) => {
+            const s = document.createElement("script");
+            s.src = src; s.onload = res; s.onerror = rej;
+            document.head.appendChild(s);
+        });
+    }
+
+    async function renderPdf(url, my) {
+        if (!window.pdfjsLib) await loadScript(PDFJS);
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+        const pdf = await window.pdfjsLib.getDocument(url).promise;
+        if (my !== token) return;
+        body.innerHTML = "";
+        const width = Math.min(body.clientWidth - 24, 900);
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        for (let n = 1; n <= pdf.numPages; n++) {
+            const page = await pdf.getPage(n);
+            if (my !== token) return;
+            const base = page.getViewport({ scale: 1 });
+            const vp = page.getViewport({ scale: (width / base.width) * ratio });
+            const canvas = document.createElement("canvas");
+            canvas.className = "cv-page";
+            canvas.width = vp.width;
+            canvas.height = vp.height;
+            canvas.style.width = width + "px";
+            canvas.style.height = (vp.height / ratio) + "px";
+            body.appendChild(canvas);
+            await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+        }
+    }
+
+    async function fallback(url, img, my) {
+        let ok = false;
+        try { ok = (await fetch(url, { method: "HEAD" })).ok; } catch (e) { ok = false; }
+        if (my !== token) return;
+        if (ok) {
+            body.innerHTML = '<iframe class="cv-frame" src="' + url + '#view=FitH" title="Certificate"></iframe>';
+        } else if (img) {
+            body.innerHTML = '<img class="cv-page" src="' + img + '" alt="Certificate">';
+        } else {
+            body.innerHTML = '<p class="cv-msg">Hindi mahanap ang <b>' + url + '</b>.</p>';
+        }
+    }
+
+    function onKey(e) {
+        if (e.key === "Escape") close();
+    }
+
+    function open(card) {
+        if (!modal) build();
+        const url = card.dataset.pdf;
+        const img = card.querySelector(".cert-img img");
+        const title = card.dataset.title || (card.querySelector("h3") || {}).textContent || "Certificate";
+        const my = ++token;
+        lastFocus = document.activeElement;
+        titleEl.textContent = title;
+        dlEl.href = url || "#";
+        dlEl.setAttribute("download", (title || "certificate").replace(/\s+/g, "-") + ".pdf");
+        newEl.href = url || "#";
+        body.innerHTML = '<p class="cv-msg">Loading...</p>';
+        modal.classList.add("open");
+        document.documentElement.classList.add("cv-lock");
+        document.addEventListener("keydown", onKey);
+        modal.querySelector(".cv-close").focus();
+        if (!url) { fallback("", img && img.src, my); return; }
+        renderPdf(url, my).catch(() => fallback(url, img && img.getAttribute("src"), my));
+    }
+
+    function close() {
+        if (!modal) return;
+        token++;
+        modal.classList.remove("open");
+        document.documentElement.classList.remove("cv-lock");
+        document.removeEventListener("keydown", onKey);
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    cards.forEach((card) => {
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("role", "button");
+        card.addEventListener("click", (e) => {
+            if (e.target.closest(".cert-dl")) return;   // Download button = download lang
+            open(card);
+        });
+        card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(card); }
+        });
+    });
 })();

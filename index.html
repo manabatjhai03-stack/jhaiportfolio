@@ -9,6 +9,7 @@
 <meta property="og:type" content="website">
 
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="cv-preview.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -125,6 +126,7 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#skills">Skills</a></li>
+                <li><a href="#certificates">Certificates</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
 
@@ -147,20 +149,7 @@
 </button>
     </div>
 </nav>
-       <button class="notes-toggle" id="notes-toggle" type="button" aria-label="Notes">
-  <i class="fa-solid fa-note-sticky"></i><span>Notes</span>
-  <b class="notes-count" id="notes-count">0</b>
-</button>
-
-<aside class="notes-panel" id="notes-panel" aria-hidden="true">
-  <header><h4>Leave a note</h4><button type="button" id="notes-close" aria-label="Close">&times;</button></header>
-  <form id="notes-form">
-    <input id="notes-name" maxlength="30" placeholder="Name (optional)">
-    <textarea id="notes-text" maxlength="280" placeholder="Write a note..." required></textarea>
-    <div class="notes-row"><small><span id="notes-left">280</span> left</small><button type="submit">Post</button></div>
-  </form>
-  <ul id="notes-list"></ul>
-</aside>
+       
 
         <section id="home" class="hero">
 
@@ -215,12 +204,16 @@
 
 
     <a href="#projects" class="btn">
-        View Projects
-    </a>
+    View Projects
+</a>
 
     <a href="#contact" class="btn secondary">
         Contact Me
     </a>
+
+    <a href="Jhai vincent s. manabat.pdf" class="btn secondary cv-btn" id="cv-btn">
+    View My CV
+</a>
 
 </div>
 
@@ -450,7 +443,7 @@
 
        
 <section id="skills" class="skills-section">
-    <h2>MY SKILLS</h2>
+    <h2>SKILLS</h2>
 
     <div class="skill-cards">
 
@@ -517,6 +510,26 @@
                     <span>Java</span>
                 </div>
 
+                <div class="skill-item">
+                    <img src="c-logo-icon-28402.png" alt="C#">
+                    <span>C#</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="c-logo-icon-28389.png" alt="C++">
+                    <span>C++</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="ruby-programming-language-icon.png" alt="Ruby">
+                    <span>Ruby</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="c-program-icon.png" alt="C">
+                    <span>C</span>
+                </div>
+
             </div>
         </div>
 
@@ -545,6 +558,8 @@
                     <span>SQLite</span>
                 </div>
 
+                
+
             </div>
         </div>
 
@@ -556,6 +571,11 @@
                 <div class="skill-item">
                     <img src="629b71eb7c5cd817694c3227.png" alt="Visual Studio">
                     <span>Visual Studio</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="github-icon.png" alt="GitHub">
+                    <span>GitHub</span>
                 </div>
 
                 <div class="skill-item">
@@ -589,14 +609,72 @@
         <!-- OTHERS -->
         <div class="skill-card other-card">
             <h3>Others</h3>
-            <div class="skill-grid other-skills">
-                <div class="other-skill-placeholder"></div>
-                <div class="other-skill-placeholder"></div>
-                <div class="other-skill-placeholder"></div>
-                <div class="other-skill-placeholder"></div>
+            <div class="skill-grid">
+
+                <div class="skill-item">
+                    <img src="kali-linux-seeklogo.png" alt="Kali Linux">
+                    <span>Kali Linux</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="NicePng_turd-png_8750625.png" alt="Nmap">
+                    <span>Nmap</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="Wireshark_icon_new.png" alt="Wireshark">
+                    <span>Wireshark</span>
+                </div>
+
+                <div class="skill-item">
+                    <img src="hashcat.png" alt="Hashcat">
+                    <span>Hashcat</span>
+                </div>
+                
             </div>
         </div>
 
+    </div>
+</section>
+
+<section id="certificates" class="certs-section">
+    <h2>CERTIFICATES</h2>
+ 
+    <div class="cert-grid">
+ 
+        <div class="cert-card" data-pdf="certificates/cert1.pdf" data-title="Certificate Title 1">
+            <div class="cert-img">
+                <img src="certificates/cert1.jpg" alt="Certificate 1" onerror="this.remove()">
+            </div>
+            <h3>Certificate Title 1</h3>
+            <p>Issuer &bull; 2026</p>
+            <a class="cert-dl" href="certificates/cert1.pdf" download="Certificate-1.pdf">
+                <i class="fa-solid fa-download"></i> Download PDF
+            </a>
+        </div>
+ 
+        <div class="cert-card" data-pdf="certificates/cert2.pdf" data-title="Certificate Title 2">
+            <div class="cert-img">
+                <img src="certificates/cert2.jpg" alt="Certificate 2" onerror="this.remove()">
+            </div>
+            <h3>Certificate Title 2</h3>
+            <p>Issuer &bull; 2026</p>
+            <a class="cert-dl" href="certificates/cert2.pdf" download="Certificate-2.pdf">
+                <i class="fa-solid fa-download"></i> Download PDF
+            </a>
+        </div>
+ 
+        <div class="cert-card" data-pdf="certificates/cert3.pdf" data-title="Certificate Title 3">
+            <div class="cert-img">
+                <img src="certificates/cert3.jpg" alt="Certificate 3" onerror="this.remove()">
+            </div>
+            <h3>Certificate Title 3</h3>
+            <p>Issuer &bull; 2026</p>
+            <a class="cert-dl" href="certificates/cert3.pdf" download="Certificate-3.pdf">
+                <i class="fa-solid fa-download"></i> Download PDF
+            </a>
+        </div>
+ 
     </div>
 </section>
 
@@ -714,6 +792,7 @@
     <script src="ascii-tide.js"></script>
     <script src="script.js"></script>
     <script type="module" src="lanyard.js"></script>
+    
 
 </body>
 </html>

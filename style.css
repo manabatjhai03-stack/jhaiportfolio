@@ -271,39 +271,6 @@ body::after {
 
 
 
-.mouse-spotlight {
-    position: fixed;
-
-    width: 150px;
-    height: 100px;
-
-    border-radius: 50%;
-
-    background: radial-gradient(
-        circle,
-        rgba(42, 111, 138, 0.267) 0%,
-        rgba(56, 169, 184, 0.199) 25%,
-        rgba(34, 126, 151, 0.295) 45%,
-        transparent 70%
-    );
-
-    pointer-events: none;
-
-    transform: translate(-50%, -50%);
-
-    z-index: 99999;
-
-    left: 0;
-    top: 0;
-
-    filter: blur(8px);
-
-    opacity: 0;
-
-    transition:
-        opacity 0.3s ease;
-}
-
 
 
 
@@ -3613,23 +3580,6 @@ img, video { max-width: 100%; }
     .about-stats { flex-wrap: wrap; }
 }
 
-/* ===== NOTES ===== */
-.notes-toggle{position:fixed;top:18px;left:14px;z-index:1200;display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(20,20,28,.85);color:#fff;cursor:pointer;backdrop-filter:blur(10px);font:600 13px inherit}
-.notes-count{background:#ff4d6d;border-radius:999px;padding:1px 7px;font-size:11px}
-@media (min-width:1100px){.notes-toggle{left:calc(50% - 450px - 110px)}}
-.notes-panel{position:fixed;top:70px;left:14px;width:min(320px,calc(100vw - 28px));max-height:70vh;overflow:auto;z-index:1200;padding:14px;border-radius:16px;background:rgba(18,18,26,.96);color:#fff;border:1px solid rgba(255,255,255,.15);opacity:0;visibility:hidden;transform:translateY(-8px);transition:.25s}
-.notes-panel.open{opacity:1;visibility:visible;transform:none}
-.notes-panel header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.notes-panel header button{background:none;border:0;color:inherit;font-size:22px;cursor:pointer}
-.notes-panel input,.notes-panel textarea{width:100%;margin-bottom:8px;padding:9px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:inherit;font:inherit}
-.notes-panel textarea{min-height:70px;resize:vertical}
-.notes-row{display:flex;justify-content:space-between;align-items:center}
-.notes-row button{padding:7px 16px;border:0;border-radius:999px;background:#7c5cff;color:#fff;cursor:pointer}
-.notes-panel ul{list-style:none;margin:12px 0 0;padding:0}
-.notes-panel li{padding:9px 0;border-top:1px solid rgba(255,255,255,.1)}
-.notes-panel li p{margin:3px 0 0;font-size:13px;opacity:.85;word-break:break-word}
-body.light-mode .notes-toggle,body.light-mode .notes-panel{background:#fff;color:#1a1a24;border-color:rgba(0,0,0,.2)}
-body.light-mode .notes-panel input,body.light-mode .notes-panel textarea{border-color:rgba(0,0,0,.25);background:#f3f4f8}
 
 /* ===== JhAi ===== */
 .jhai-toggle{position:fixed;right:18px;bottom:18px;z-index:1300;width:60px;height:60px;border-radius:50%;border:0;cursor:pointer;color:#fff;font-size:22px;background:linear-gradient(135deg,#7c5cff,#00d4ff);box-shadow:0 8px 24px rgba(124,92,255,.5);display:grid;place-items:center;animation:jhaiFloat 3s ease-in-out infinite;transition:scale .2s}
@@ -3671,3 +3621,714 @@ body.light-mode .jhai-msg.bot{background:#eceef5}
 body.light-mode .jhai-form input{border-color:rgba(0,0,0,.25);background:#f3f4f8}
 body.light-mode .jhai-chips button{border-color:rgba(0,0,0,.3)}
 @media (max-width:480px){.jhai-hint{display:none}}
+
+
+/* =========================
+   CV PREVIEW POP-UP
+========================= */
+
+html.cv-lock,
+html.cv-lock body {
+    overflow: hidden;
+}
+
+.cv-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    background: rgba(4, 5, 12, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.cv-modal.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cv-panel {
+    width: min(960px, 100%);
+    height: min(90vh, 100%);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    border-radius: 20px;
+    border: 1px solid rgba(145, 160, 255, 0.3);
+    background: #0e0f18;
+    color: #fff;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+
+    transform: translateY(18px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cv-modal.open .cv-panel {
+    transform: none;
+}
+
+.cv-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px 14px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cv-title {
+    font-family: "Audiowide", sans-serif;
+    font-size: 18px;
+}
+
+.cv-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cv-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.cv-action:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+}
+
+.cv-download {
+    background: #fff;
+    border-color: #fff;
+    color: #111;
+}
+
+.cv-download:hover {
+    background: #e6e8ff;
+}
+
+.cv-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: transparent;
+    color: #fff;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+.cv-close:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.cv-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px;
+    background: #1a1c2a;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+.cv-page {
+    display: block;
+    margin: 0 auto 12px;
+    max-width: 100%;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.cv-frame {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.cv-msg {
+    margin: 40px 16px;
+    text-align: center;
+    color: #aab0d0;
+}
+
+body.light-mode .cv-panel {
+    background: #f4f5fa;
+    color: #20212a;
+    border-color: rgba(50, 55, 90, 0.3);
+}
+
+body.light-mode .cv-head {
+    border-bottom-color: rgba(50, 55, 90, 0.15);
+}
+
+body.light-mode .cv-action,
+body.light-mode .cv-close {
+    color: #20212a;
+    border-color: rgba(50, 55, 90, 0.3);
+}
+
+body.light-mode .cv-download {
+    background: #20212a;
+    border-color: #20212a;
+    color: #fff;
+}
+
+body.light-mode .cv-body {
+    background: #d9dbe6;
+}
+
+@media (max-width: 600px) {
+    .cv-modal {
+        padding: 10px;
+    }
+
+    .cv-panel {
+        height: 94vh;
+        border-radius: 16px;
+    }
+
+    .cv-head {
+        padding: 10px 10px 10px 16px;
+    }
+
+    .cv-action {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* icon lang sa maliit na screen */
+    .cv-newtab {
+        display: none;
+    }
+}
+
+/* para hindi mag-overflow ang 3 buttons sa hero */
+.buttons {
+    flex-wrap: wrap;
+}
+
+
+/* =========================
+   CERTIFICATES
+========================= */
+#certificates.certs-section {
+    padding: 120px 10% 80px;
+}
+
+#certificates h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+#certificates .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    max-width: 1320px;
+}
+
+#certificates .cert-card {
+    min-width: 0;
+    padding: 14px 14px 20px;
+    border: 1px solid rgba(145, 160, 255, 0.25);
+    border-radius: 20px;
+    background: rgba(14, 15, 24, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+#certificates .cert-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(117, 110, 255, 0.6);
+}
+
+#certificates .cert-img {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(200, 205, 230, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a90b0;
+    font-size: 13px;
+}
+
+#certificates .cert-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+#certificates .cert-card h3 {
+    margin: 16px 4px 6px;
+    font-size: 17px;
+}
+
+#certificates .cert-card p {
+    margin: 0 4px;
+    font-size: 13px;
+    color: #9aa0c0;
+    line-height: 1.5;
+}
+
+/* light mode: kita ang border at box */
+body.light-mode #certificates .cert-card {
+    background: #f4f5fa;
+    border-color: rgba(50, 55, 90, 0.3);
+    box-shadow: 0 8px 22px rgba(30, 35, 60, 0.1);
+}
+
+body.light-mode #certificates .cert-card p {
+    color: #555a75;
+}
+
+@media (max-width: 600px) {
+    #certificates.certs-section {
+        padding: 90px 7% 60px;
+    }
+}
+
+/* DOWNLOAD PDF button */
+#certificates .cert-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 14px 4px 0;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+#certificates .cert-dl:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+}
+
+body.light-mode #certificates .cert-dl {
+    color: #20212a;
+    border-color: rgba(50, 55, 90, 0.35);
+}
+
+body.light-mode #certificates .cert-dl:hover {
+    background: rgba(50, 55, 90, 0.08);
+}
+
+/* =========================
+   CV PREVIEW POP-UP
+========================= */
+
+html.cv-lock,
+html.cv-lock body {
+    overflow: hidden;
+}
+
+.cv-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    background: rgba(4, 5, 12, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.cv-modal.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cv-panel {
+    width: min(960px, 100%);
+    height: min(90vh, 100%);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    border-radius: 20px;
+    border: 1px solid rgba(145, 160, 255, 0.3);
+    background: #0e0f18;
+    color: #fff;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+
+    transform: translateY(18px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cv-modal.open .cv-panel {
+    transform: none;
+}
+
+.cv-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px 14px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cv-title {
+    font-family: "Audiowide", sans-serif;
+    font-size: 18px;
+}
+
+.cv-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cv-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.cv-action:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+}
+
+.cv-download {
+    background: #fff;
+    border-color: #fff;
+    color: #111;
+}
+
+.cv-download:hover {
+    background: #e6e8ff;
+}
+
+.cv-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: transparent;
+    color: #fff;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+.cv-close:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.cv-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px;
+    background: #1a1c2a;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+.cv-page {
+    display: block;
+    margin: 0 auto 12px;
+    max-width: 100%;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.cv-frame {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.cv-msg {
+    margin: 40px 16px;
+    text-align: center;
+    color: #aab0d0;
+}
+
+body.light-mode .cv-panel {
+    background: #f4f5fa;
+    color: #20212a;
+    border-color: rgba(50, 55, 90, 0.3);
+}
+
+body.light-mode .cv-head {
+    border-bottom-color: rgba(50, 55, 90, 0.15);
+}
+
+body.light-mode .cv-action,
+body.light-mode .cv-close {
+    color: #20212a;
+    border-color: rgba(50, 55, 90, 0.3);
+}
+
+body.light-mode .cv-download {
+    background: #20212a;
+    border-color: #20212a;
+    color: #fff;
+}
+
+body.light-mode .cv-body {
+    background: #d9dbe6;
+}
+
+@media (max-width: 600px) {
+    .cv-modal {
+        padding: 10px;
+    }
+
+    .cv-panel {
+        height: 94vh;
+        border-radius: 16px;
+    }
+
+    .cv-head {
+        padding: 10px 10px 10px 16px;
+    }
+
+    .cv-action {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* icon lang sa maliit na screen */
+    .cv-newtab {
+        display: none;
+    }
+}
+
+/* para hindi mag-overflow ang 3 buttons sa hero */
+.buttons {
+    flex-wrap: wrap;
+}
+
+
+/* =========================
+   CERTIFICATES
+========================= */
+#certificates.certs-section {
+    padding: 120px 10% 80px;
+}
+
+#certificates h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+#certificates .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    max-width: 1320px;
+}
+
+#certificates .cert-card {
+    min-width: 0;
+    padding: 14px 14px 20px;
+    border: 1px solid rgba(145, 160, 255, 0.25);
+    border-radius: 20px;
+    background: rgba(14, 15, 24, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    cursor: pointer;
+    outline: none;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+#certificates .cert-card:hover,
+#certificates .cert-card:focus-visible {
+    transform: translateY(-4px);
+    border-color: rgba(117, 110, 255, 0.6);
+}
+
+#certificates .cert-img {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(200, 205, 230, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a90b0;
+    font-size: 13px;
+}
+
+#certificates .cert-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+#certificates .cert-card:hover .cert-img img {
+    transform: scale(1.05);
+}
+
+/* "Click to preview" na lalabas pag naka-hover */
+#certificates .cert-img::after {
+    content: "Click to preview";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(8, 9, 18, 0.55);
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+#certificates .cert-card:hover .cert-img::after,
+#certificates .cert-card:focus-visible .cert-img::after {
+    opacity: 1;
+}
+
+#certificates .cert-card h3 {
+    margin: 16px 4px 6px;
+    font-size: 17px;
+}
+
+#certificates .cert-card p {
+    margin: 0 4px;
+    font-size: 13px;
+    color: #9aa0c0;
+    line-height: 1.5;
+}
+
+/* DOWNLOAD PDF button */
+#certificates .cert-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 14px 4px 0;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+#certificates .cert-dl:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+}
+
+/* FADE IN + BLUR (keyframes, hindi nababali ng hover/transition) */
+#certificates .cert-pre {
+    opacity: 0;
+    filter: blur(10px);
+}
+
+#certificates .cert-in {
+    animation: certIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes certIn {
+    from {
+        opacity: 0;
+        filter: blur(10px);
+        transform: translateY(36px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0);
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #certificates .cert-pre { opacity: 1; filter: none; }
+    #certificates .cert-in { animation: none; }
+}
+
+/* light mode: kita ang border at box */
+body.light-mode #certificates .cert-card {
+    background: #f4f5fa;
+    border-color: rgba(50, 55, 90, 0.3);
+    box-shadow: 0 8px 22px rgba(30, 35, 60, 0.1);
+    --card-bg: #f4f5fa;
+}
+
+body.light-mode #certificates .cert-card p {
+    color: #555a75;
+}
+
+body.light-mode #certificates .cert-dl {
+    color: #20212a;
+    border-color: rgba(50, 55, 90, 0.35);
+}
+
+body.light-mode #certificates .cert-dl:hover {
+    background: rgba(50, 55, 90, 0.08);
+}
+
+@media (max-width: 600px) {
+    #certificates.certs-section {
+        padding: 90px 7% 60px;
+    }
+}
